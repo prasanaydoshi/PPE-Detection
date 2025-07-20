@@ -23,7 +23,8 @@ if uploaded:
     tmp = tempfile.NamedTemporaryFile(delete=False)
     tmp.write(uploaded.read())                # save to disk for YOLO
     source_path = tmp.name
-
+    tmp.close()  # Important: close before YOLO reads it
+    source_path = tmp.name
     # Inference ➜ `predict()` auto‑detects img vs. video
     results = model.predict(source_path, conf=conf, save=False)
     for r in results:                         # iterate frames if video
