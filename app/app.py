@@ -20,17 +20,20 @@ uploaded = st.file_uploader(
 )
 
 if uploaded:
-    tmp = tempfile.NamedTemporaryFile(delete=False)
-    tmp.write(uploaded.read())                # save to disk for YOLO
+    # Get the file extension from uploaded file
+    file_extension = uploaded.name.split('.')[-1]
+    
+    # Create temp file WITH extension
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=f'.{file_extension}')
+    tmp.write(uploaded.read())
+    tmp.close()  # Close before YOLO reads it
     source_path = tmp.name
-    tmp.close()  # Important: close before YOLO reads it
-    source_path = tmp.name
-    # Inference ➜ `predict()` auto‑detects img vs. video
+    
+    # Inference
     results = model.predict(source_path, conf=conf, save=False)
-    for r in results:                         # iterate frames if video
-        # Draw bounding boxes
-        annotated = r.plot()                  # returns BGR np.array
-        if r.orig_shape[2] == 3:              # image
+    for r in results:
+        annotated = r.plot()
+        if len(r.orig_shape) == 3:  # image (height, width, channels)
             st.image(annotated[..., ::-1], channels="RGB")
-        else:                                 # video frame
+        else:  # video - this logic might need adjustment
             st.video(cv2.imencode(".mp4", annotated)[1].tobytes())
