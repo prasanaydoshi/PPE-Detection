@@ -20,20 +20,33 @@ uploaded = st.file_uploader(
 )
 
 if uploaded:
-    # Get the file extension from uploaded file
-    file_extension = uploaded.name.split('.')[-1]
-    
-    # Create temp file WITH extension
+    file_extension = uploaded.name.split('.')[-1].lower()
     tmp = tempfile.NamedTemporaryFile(delete=False, suffix=f'.{file_extension}')
     tmp.write(uploaded.read())
-    tmp.close()  # Close before YOLO reads it
+    tmp.close()
     source_path = tmp.name
     
-    # Inference
-    results = model.predict(source_path, conf=conf, save=False)
-    for r in results:
-        annotated = r.plot()
-        if len(r.orig_shape) == 3:  # image (height, width, channels)
-            st.image(annotated[..., ::-1], channels="RGB")
-        else:  # video - this logic might need adjustment
-            st.video(cv2.imencode(".mp4", annotated)[1].tobytes())
+    try:
+        results = model.predict(source_path, conf=conf, save=False)
+        
+        # Check if it's an image or video based on file extension
+        if file_extension in ['jpg', 'jpeg', 'png']:
+            # Handle images
+            for r in results:
+                annotated = r.plot()
+                st.image(annotated[..., ::-1], channels="RGB")
+        else:
+            # Handle videos - for now, just show first frame
+            # (proper video handling is more complex)
+            for r in results:
+                annotated = r.plot()
+                st.image(annotated[..., ::-1], channels="RGB")
+                break  # Just show first frame for now
+                
+    except Exception as e:
+        st.error(f"Error processing file: {e}")
+    finally:
+        # Clean up
+        import os
+        if os.path.exists(source_path):
+            os.unlink(source_path)
