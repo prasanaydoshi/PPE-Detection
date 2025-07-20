@@ -1,4 +1,0 @@
-streamlit>=1.32
-ultralytics>=8.2
-opencv-python-headless  # avoids X‑server deps on Cloud
-pillow
