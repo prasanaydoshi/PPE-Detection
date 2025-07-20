@@ -1,0 +1,48 @@
+# ── Python basics ──────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+.venv/
+env/
+.env/
+.tox/
+
+# Type‑checker & test caches
+.mypy_cache/
+.pytest_cache/
+
+# Logs, coverage
+*.log
+logs/
+.coverage
+htmlcov/
+
+# Editor / OS junk
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ── Streamlit ─────────────────────────────────────────────────
+# Keep UI config but never commit secrets
+.streamlit/secrets.toml
+
+# ── YOLO / model artefacts ────────────────────────────────────
+# Large weights and experiment outputs
+*.pt
+*.onnx
+*.engine
+runs/               # Ultralytics default output dir
+model/*.pt
+data/               # raw datasets (if recreated from source)
+
+# ── Notebooks checkpoints ────────────────────────────────────
+.ipynb_checkpoints/
