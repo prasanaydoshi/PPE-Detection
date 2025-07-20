@@ -5,7 +5,7 @@ from PIL import Image
 import cv2, tempfile, numpy as np
 
 @st.cache_resource  # model loads once per session
-def load_model(local_weight: str = "models/best.pt"):
+def load_model(local_weight: str = "model/best.pt"):
     return YOLO(local_weight)                 # ➜ PyTorch backend
 
 model = load_model()
